@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<!-- d3는 코드에 utf8 문자를 사용한다(min.js 스크립트 임포트 할땐 필요없긴함) -->
+		<meta charset="utf-8">
+    <title>d3 basic 2</title>
+		<script src="/d3.v4.min.js"></script>
+		<style>
+		</style>
+		<script>
+			window.onload = function(){
+				/*
+				d3.select('body').append('div')
+					.style('border', '1px black solid')
+					.html('hello world')
+
+				d3.select('div')
+					.style('background-color', 'pink')
+					.style('font-size', '24px')
+					.attr('id', 'newDiv')
+					.attr('class', 'd3div')
+					.on('click', function() {console.log('you clicked a div')});
+				*/
+
+				// d3로 도형을 추가하려면 페이지의 DOM어딘가에 SVG요소가 있어야 한다.
+				// 다음과 같이 동적으로 추가해도 되고.. 정적으로 하드코딩 해도된다
+				// d3.select('body').append('svg');
+
+
+				/*
+				d3.select('svg')
+					.append('line')
+					.attr('x1', 20)
+					.attr('y1', 20)
+					.attr('x2', 400)
+					.attr('y2', 400)
+					.style('stroke', 'black')
+					.style('stroke-width', '2px')
+
+				d3.select('svg')
+					.append('text')
+					.attr('x', 20)
+					.attr('y', 20)
+					.text('Hello')
+
+				d3.select('svg')
+					.append('circle')
+					.attr('r', 20)
+					.attr('cx', 20)
+					.attr('cy', 20)
+					.style('fill', 'red');
+
+				d3.select('svg')
+					.append('circle')
+					.attr('r', 100)
+					.attr('cx', 400)
+					.attr('cy', 400)
+					.style('fill', 'lightblue');
+
+				d3.select('svg')
+					.append('text')
+					.attr('x', 400)
+					.attr('y', 400)
+					.text('world');
+				*/
+
+				d3.select('svg')
+					.append('circle')
+					.attr('r', 20)
+					.attr('cx', 20)
+					.attr('cy', 20)
+					.style('fill', 'red')
+
+				d3.select('svg')
+					.append('text')
+					.attr('id', 'a')
+					.attr('x', 20)
+					.attr('y', 20)
+					.style('opacity', 0)
+					.text('hello world');
+
+				d3.select('svg')
+					.append('circle')
+					.attr('r', 100)
+					.attr('cx', 400)
+					.attr('cy', 400)
+					.style('fill', 'lightblue');
+
+				d3.select('svg')
+					.append('text')
+					.attr('id', 'b')
+					.attr('x', 400)
+					.attr('y', 400)
+					.style('opacity', 0)
+					.text('Uh, Hi.');
+
+				d3.select('#a').transition().delay(1000).style('opacity', 1);
+				d3.select('#b').transition().delay(3000).style('opacity', .75);
+				
+				d3.selectAll('circle').transition().duration(2000).attr('cy', 200);
+			}
+		</script>
+  </head>
+  <body>
+		<div id="vizcontainer">
+			<svg style="width:500px; height:500px; border:1px lightgray solid;"/>
+		</div>
+  </body>
+</html>

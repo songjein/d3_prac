@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<!-- d3는 코드에 utf8 문자를 사용한다(min.js 스크립트 임포트 할땐 필요없긴함) -->
+		<meta charset="utf-8">
+    <title>d3 basic</title>
+		<script src="/d3.v4.min.js"></script>
+		<style>
+			#borderdiv{
+				width: 200px;
+				height: 50px;
+				border: 1px solid gray;
+			}
+		</style>
+  </head>
+  <body>
+		<div id="borderdiv"></div>
+		<script>
+			/*
+			var someData = ['filter', 'filter', 'filter', 'filter'];
+			d3.select('body').selectAll('div')
+				.data(someData)
+				.enter()
+				.append('div')
+				.html('WoW')
+				.append('span')
+				.html('Even More WoW')
+				.style('font-weight', '900');
+				*/
+
+			var someNumbers = [17, 82, 9, 500, 40];
+			smallerNumbers = someNumbers.filter(function(el) {return el <= 40});
+			d3.select('body').selectAll('div')
+				.data(smallerNumbers)
+				.enter()
+				.append('div')
+				.html(function(d) {return d;});
+		</script>
+  </body>
+</html>
