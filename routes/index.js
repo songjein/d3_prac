@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
+// chapter 1 
+// chapter 1 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
@@ -20,5 +22,11 @@ router.get('/d3_basic', function(req, res, next) {
 
 router.get('/d3_basic2', function(req, res, next) {
   res.render('d3_basic2', { title: 'Express' });
+});
+
+// chapter 2
+// chapter 2
+router.get('/bargraph', function(req, res, next) {
+  res.render('bargraph', { title: 'Express' });
 });
 module.exports = router;
