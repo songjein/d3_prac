@@ -8,10 +8,19 @@
 		</style>
 	</head>
   <body>
-		<svg style="width:500px;height:500px;border:1px lightgray solid;">
+		<svg id="svg1" style="width:500px;height:500px;border:1px lightgray solid;">
+		</svg>
+
+		<svg id="svg2" style="width:500px;height:500px;border:1px lightgray solid;">
 		</svg>
 		<script>
+			/* 
+			// 연습 
 			var yScale = d3.scaleLinear().domain([0,24500]).range([0,100]);
+			// 편차가 심한 값을 사용할 때는 polylinear 다중 선형 스케일을 사용
+			// var yScale = d3.scaleLinear().domain([0, 100, 1000, 24500]).range([0, 50, 75, 100]);
+			// 500 이상일 경우 100으로 채워주려면 
+			// var yScale = d3.scaleLinear().domain([0, 100, 500]).range([0, 50, 100]).clamp(true);
 			d3.select('svg')
 				.selectAll('rect')
 				.data([14, 68, 24500, 430, 19, 1000, 5555])
@@ -25,30 +34,71 @@
 				.style('opacity', .25)
 				.style('x', function(d,i){return i*10})
 				.style('y', function(d,i){return 100 - yScale(d);});
-			/*
+			*/
+
 			d3.csv('/cities.csv', function(error, data){
-				dataViz(data);			
+				dataViz_1(data);			
 			});
 
-			function dataViz(incomingData){
+			function dataViz_1(incomingData){
+				var maxPopulation = d3.max(incomingData, function(el){
+					return parseInt(el.population);	
+				});
+
+				var yScale = d3.scaleLinear().domain([0, maxPopulation]).range([0,460]);
+				var cScale = d3.scaleLinear().domain([0, maxPopulation]).range(['green','red']);
+				d3.select('#svg1').attr('style', 'height: 480px; width:600px;');
 				// 처음엔 빈 셀렉션, but s셀렉션이 cities.csv 데이터를 바인딩 하면 요소가 생성됨
-				d3.select('body').selectAll('div.cities')
-				// data를 셀렉션에 바인딩
-				.data(incomingData)
-				// 셀렉션 안에 있는 dom 요소보다 데이터가 더 많을 때 어떻게 대응할지( 아... 이때 쓰이는구나 )
-				.enter()
-				// 현재 셀렉션 안에 요소 생성
-				.append('div')
-				// 새로 생성된 요소의 클래스 설정
-				.attr('class', 'cities')
-				.html(function(d,i) {return d.label;});
+				d3.select('#svg1')
+					.selectAll('rect')
+					.data(incomingData)
+					// 셀렉션 안에 있는 dom 요소보다 데이터가 더 많을 때 어떻게 대응할지( 아... 이때 쓰이는구나 )
+					.enter()
+					// 현재 셀렉션 안에 요소 생성
+					.append('rect')
+					.attr('width', 50)
+					.attr('height', function(d){return yScale(parseInt(d.population));})
+					.attr('x', function(d,i){return i * 60})
+					.attr('y', function(d){return 480 - yScale(parseInt(d.population));})
+					.style('fill', function(d){return cScale(parseInt(d.population));})
+					.style('stroke', 'red')
+					.style('stroke-width', '1px')
+					.style('opacity', .25)
 			}
 
 			d3.json('/tweets.json', function(data){
-				console.log(data);	
+				dataViz_2(data.tweets);
 			});
-			*/
-		</script>
 
+			function dataViz_2(incomingData){
+				var nestedTweets = d3.nest()
+					.key(function(el){return el.user;})
+					.entries(incomingData);
+
+				nestedTweets.forEach(function(el){
+					// 새로운 속성 정의
+					el.numTweets = el.values.length;	
+				});
+
+				var maxTweets = d3.max(nestedTweets, function(el) {return el.numTweets;});
+
+				var yScale = d3.scaleLinear().domain([0, maxTweets]).range([0,100]);
+
+				d3.select('#svg2').attr('style', 'height: 480px; width:600px;');
+				d3.select('#svg2')
+					.selectAll('rect')
+					.data(nestedTweets)
+					.enter()
+					.append('rect')
+					.attr('width', 50)
+					.attr('height', function(d){return yScale(d.numTweets);})
+					.attr('x', function(d,i){return i * 60;})
+					.attr('y', function(d) {return 480 - yScale(d.numTweets);})
+					.style("fill","blue")
+					.style("stroke","red")
+					.style("stroke-width","1px")
+					.style("opacity", .25);
+			}
+		</script>
   </body>
 </html>

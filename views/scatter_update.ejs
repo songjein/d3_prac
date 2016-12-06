@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta charset="utf-8">
+    <title>d3 basic</title>
+		<script src="/d3.v4.min.js"></script>
+		<style>
+		</style>
+	</head>
+  <body>
+		<svg style="width:500px;height:500px;border:1px lightgray solid;">
+		</svg>
+		<script>
+			d3.json('/tweets.json', function(data){
+				dataViz(data.tweets);
+			});
+
+			function dataViz(incomingData){
+				incomingData.forEach(function(el){
+					el.impact = el.favorites.length + el.retweets.length;
+					el.tweetTime = new Date(el.timestamp);
+				});
+
+				var maxImpact = d3.max(incomingData, function(el){return el.impact;});
+				var startEnd = d3.extent(incomingData, function(el){return el.tweetTime;}); 
+
+				var timeRamp = d3.scaleTime().domain(startEnd).range([20,480]);
+				var yScale = d3.scaleLinear().domain([0, maxImpact]).range([0,460]);
+				var radiusScale = d3.scaleLinear().domain([0, maxImpact]).range([1,20]);
+				var colorScale = d3.scaleLinear().domain([0, maxImpact]).range(["#ABF200", "red"]);
+
+				var tweetG = d3.select('svg').selectAll('g')
+					.data(incomingData, function(d){
+						// 키 설정	
+						// 고유한 값이 없으면 객체 전체 사용하면됨, 대신 스트링화
+						return JSON.stringify(d);
+					})
+					.enter()
+					.append('g')
+					.attr('transform', function(d){
+						return 'translate(' + 
+							timeRamp(d.tweetTime) + ',' + (480 - yScale(d.impact))
+							+ ')';
+					});
+				
+				// 참고:  append는 마지막으로 select된 대상에 대해서 이루어짐!
+				tweetG.append('circle')
+					.attr('r', function(d){return radiusScale(d.impact);})
+					.style("fill", function(d){return colorScale(d.impact);})
+					.style("stroke","black")
+					.style("stroke-width","1px");
+
+				// 참고:  append는 마지막으로 select된 대상에 대해서 이루어짐!
+				tweetG.append('text')
+					.text(function(d){return d.user + "-" + d.tweetTime.getHours();});
+					//.style('text-anchor', 'middle');
+
+
+				// update 코드
+				// update 코드
+				// 임팩트 낮은건 지우기 (0)
+				var filteredData = incomingData.filter(
+					function(el) {return el.impact > 0}	
+				);
+
+				d3.selectAll('g')
+					.data(filteredData, function(d){
+						return JSON.stringify(d);
+					})
+					.exit()
+					.remove();
+			}
+		</script>
+  </body>
+</html>

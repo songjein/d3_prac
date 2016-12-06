@@ -29,4 +29,13 @@ router.get('/d3_basic2', function(req, res, next) {
 router.get('/bargraph', function(req, res, next) {
   res.render('bargraph', { title: 'Express' });
 });
+
+router.get('/scatter', function(req, res, next) {
+  res.render('scatter', { title: 'Express' });
+});
+
+router.get('/scatter_update', function(req, res, next) {
+  res.render('scatter_update', { title: 'Express' });
+});
+
 module.exports = router;
